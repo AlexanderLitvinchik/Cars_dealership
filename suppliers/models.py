@@ -3,7 +3,15 @@ from django.db import models
 
 # from  autosalons.models import BaseModel
 
-class Supplier_Discount(models.Model):
+class BaseModel(models.Model):
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Supplier_Discount(BaseModel):
     discount_percentage = models.FloatField()
     suppliers = models.ManyToManyField('Supplier', related_name="supplier_discounts")
 
@@ -11,7 +19,7 @@ class Supplier_Discount(models.Model):
         return f"{self.discount_percentage}% discount on {self.car}"
 
 
-class Sales_of_suppliers(models.Model):
+class Sales_of_suppliers(BaseModel):
     supplier = models.ForeignKey('Supplier', related_name='sales_of_supplier', on_delete=models.CASCADE)
     autosalon = models.OneToOneField('autosalons.Autosalon', related_name='sales_of_suppliers_to_autosalon',
                                   on_delete=models.CASCADE)
@@ -23,7 +31,7 @@ class Sales_of_suppliers(models.Model):
         return f"Sale of {self.car} on {self.sale_date}"
 
 
-class Supplier(models.Model):
+class Supplier(BaseModel):
     name = models.CharField(max_length=100)
     year_founded = models.PositiveIntegerField()
     # поупатели постовщика это автосолоны

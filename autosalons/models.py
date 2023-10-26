@@ -53,7 +53,7 @@ class CarModel(BaseModel):
     price_autosalon = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
 
-    autosolons = models.ManyToManyField('Autosalon',null=True,
+    autosolons = models.ManyToManyField('Autosalon',
                                         related_name='cars_in_autosalon')
     # category = models.ForeignKey(CarCategory, on_delete=models.CASCADE)
     specification = models.OneToOneField('Specification', related_name='car_specification', on_delete=models.CASCADE)
@@ -77,7 +77,7 @@ class Autosalon(BaseModel):
 
 class Autosalon_Sales(BaseModel):
     # нужно ли мнгоие ко многим
-    car = models.OneToOneField(CarModel,on_delete=models.CASCADE, related_name='saled_cars')
+    car = models.OneToOneField(CarModel, on_delete=models.CASCADE, related_name='saled_cars')
     sale_date = models.DateTimeField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
