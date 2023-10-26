@@ -30,5 +30,7 @@ class Supplier(models.Model):
     #num_customers = models.IntegerField()
     discounts = models.ManyToManyField(Supplier_Discount, related_name="suppliers_discount")
 
+
+
     def __str__(self):
         return self.name

@@ -29,7 +29,7 @@ class Specification(BaseModel):
                                              related_name='specification_discount_supplier')
 
 
-class Supplier_Specification_price(models.Model):
+class Supplier_Specification_price(BaseModel):
     supplier_specification_price = models.DecimalField(max_digits=10, decimal_places=2)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='supplier_specification_prices')
     specification = models.ForeignKey(Specification, on_delete=models.CASCADE,
