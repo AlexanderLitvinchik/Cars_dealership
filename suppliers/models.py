@@ -11,20 +11,22 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
+
 class Supplier_Discount(BaseModel):
     discount_percentage = models.FloatField()
-    suppliers = models.ManyToManyField('Supplier', related_name="supplier_discounts")
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.discount_percentage}% discount on {self.car}"
+        return f"{self.discount_percentage}% discount"
 
 
 class Sales_of_suppliers(BaseModel):
     supplier = models.ForeignKey('Supplier', related_name='sales_of_supplier', on_delete=models.CASCADE)
-    autosalon = models.OneToOneField('autosalons.Autosalon', related_name='sales_of_suppliers_to_autosalon',
+    autosalon = models.ForeignKey('autosalons.Autosalon', related_name='sales_of_suppliers_to_autosalon',
                                   on_delete=models.CASCADE)
-    car = models.OneToOneField('autosalons.CarModel', related_name='sales_of_suppliers_car',
-                                     on_delete=models.CASCADE)
+    car = models.ForeignKey('autosalons.CarModel', related_name='sales_of_suppliers_car', blank=True, null=True,
+                            on_delete=models.SET_NULL)
     sale_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -35,10 +37,8 @@ class Supplier(BaseModel):
     name = models.CharField(max_length=100)
     year_founded = models.PositiveIntegerField()
     # поупатели постовщика это автосолоны
-    #num_customers = models.IntegerField()
-    discounts = models.ManyToManyField(Supplier_Discount, related_name="suppliers_discount")
-
-
+    # num_customers = models.IntegerField()
+    discount_suppliers = models.ManyToManyField(Supplier_Discount, blank=True, related_name="discount_suppliers")
 
     def __str__(self):
         return self.name
