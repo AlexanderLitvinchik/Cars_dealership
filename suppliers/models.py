@@ -21,11 +21,11 @@ class Supplier_Discount(BaseModel):
         return f"{self.discount_percentage}% discount"
 
 
-class Sales_of_suppliers(BaseModel):
-    supplier = models.ForeignKey('Supplier', related_name='sales_of_supplier', on_delete=models.CASCADE)
-    autosalon = models.ForeignKey('autosalons.Autosalon', related_name='sales_of_suppliers_to_autosalon',
+class Supplier_History(BaseModel):
+    supplier = models.ForeignKey('Supplier', related_name='histories', on_delete=models.CASCADE)
+    autosalon = models.ForeignKey('autosalons.Autosalon', related_name='histories_of_suppliers_to_autosalon',
                                   on_delete=models.CASCADE)
-    car = models.ForeignKey('autosalons.CarModel', related_name='sales_of_suppliers_car', blank=True, null=True,
+    car = models.ForeignKey('autosalons.CarModel', related_name='histories', blank=True, null=True,
                             on_delete=models.SET_NULL)
     sale_date = models.DateTimeField(auto_now_add=True)
 
@@ -36,8 +36,6 @@ class Sales_of_suppliers(BaseModel):
 class Supplier(BaseModel):
     name = models.CharField(max_length=100)
     year_founded = models.PositiveIntegerField()
-    # поупатели постовщика это автосолоны
-    # num_customers = models.IntegerField()
     discount_suppliers = models.ManyToManyField(Supplier_Discount, blank=True, related_name="discount_suppliers")
 
     def __str__(self):

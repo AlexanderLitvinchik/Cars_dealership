@@ -52,14 +52,14 @@ class Discount_autosalon(BaseModel):
         return f"{self.discount_percentage}% discount"
 
 
-# Нужна ли связь с Specification?, или  просто здесь добавить поле имя авто
-# полное название (Audi A7) получать из spetification, немного не логично
-
+# Может ли быть одна машина в нескольких автосалонах?
+# если написать  пробег или номер, то получается нет(взял что машины с одинаковым пробегом могут быть в разныхавтосалонах)
 class CarModel(BaseModel):
-    # number_of_car = models.CharField(max_length=30, unique=True)
+    color = models.CharField(max_length=30)
+    mileage = models.PositiveIntegerField()
     in_autosalon = models.BooleanField(default=True)
     # category = models.ForeignKey(CarCategory, on_delete=models.CASCADE)
-    specification = models.OneToOneField('Specification', related_name='car_specification', on_delete=models.CASCADE)
+    specification = models.ForeignKey('Specification', related_name='car_specification', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.specification}"
@@ -93,16 +93,16 @@ class CarInAutosalon(models.Model):
         return f"{self.car_model.specification.name_of_car} in {self.autosalon}"
 
 
-class Autosalon_Sales(BaseModel):
+class Autosalon_History(BaseModel):
     # нужно ли мнгоие ко многим
     car = models.ForeignKey(CarModel, null=True,
                             on_delete=models.SET_NULL, related_name='saled_cars')
     sale_date = models.DateTimeField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
-    autosalon = models.ForeignKey(Autosalon, related_name='autosalon_sales', on_delete=models.CASCADE)
+    autosalon = models.ForeignKey(Autosalon, related_name='autosalon_histories', on_delete=models.CASCADE)
     # продажи автоссалона это и есть покупки покупателей так зачем же две таблицы создавать
-    unique_customer = models.ForeignKey('customers.Customer', related_name='customer_sales',
+    unique_customer = models.ForeignKey('customers.Customer', related_name='customer_histories',
                                         on_delete=models.CASCADE)
 
     def __str__(self):

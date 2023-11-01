@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Specification, Supplier_Specification_price, Discount_autosalon, CarModel, Autosalon, \
-    Autosalon_Sales, CarInAutosalon
+    Autosalon_History, CarInAutosalon
 
 
 @admin.register(Specification)
@@ -42,7 +42,7 @@ class CarInAutosalonAdmin(admin.ModelAdmin):
     list_filter = ('car_model', 'autosalon', 'quantity')
 
 
-@admin.register(Autosalon_Sales)
-class AutosalonSalesAdmin(admin.ModelAdmin):
+@admin.register(Autosalon_History)
+class Autosalon_HistoryAdmin(admin.ModelAdmin):
     list_display = ('car', 'sale_date', 'amount', 'autosalon', 'unique_customer')
     list_filter = ('sale_date', 'amount')

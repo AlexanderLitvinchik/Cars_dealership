@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Supplier, Supplier_Discount, Sales_of_suppliers
+from .models import Supplier, Supplier_Discount, Supplier_History
 
 
 # class SupplierDiscountInline(admin.TabularInline):
@@ -34,8 +34,8 @@ class SupplierDiscountAdmin(admin.ModelAdmin):
     search_fields = ('discount_percentage',)
 
 
-@admin.register(Sales_of_suppliers)
-class SalesOfSuppliersAdmin(admin.ModelAdmin):
+@admin.register(Supplier_History)
+class Supplier_HistoryAdmin(admin.ModelAdmin):
     list_display = ('sale_date', 'supplier', 'autosalon', 'car')
     list_filter = ('sale_date', 'autosalon', 'car')
 

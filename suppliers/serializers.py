@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from autosalons.models import CarModel, Autosalon
-from .models import Supplier, Supplier_Discount, Sales_of_suppliers
+from .models import Supplier, Supplier_Discount, Supplier_History
 
 
 # from autosalons.serializers import AutosalonSerializer, CarModelSerializer
@@ -21,11 +21,11 @@ class SupplierSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SalesOfSuppliersSerializer(serializers.ModelSerializer):
+class Supplier_HistorySerializer(serializers.ModelSerializer):
     supplier = SupplierSerializer()
     autosalon = serializers.PrimaryKeyRelatedField(queryset=Autosalon.objects.all())
     car = serializers.PrimaryKeyRelatedField(queryset=CarModel.objects.all(), required=False, allow_null=True)
 
     class Meta:
-        model = Sales_of_suppliers
+        model = Supplier_History
         fields = '__all__'
