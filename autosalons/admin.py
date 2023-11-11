@@ -1,48 +1,52 @@
 from django.contrib import admin
-from .models import Specification, Supplier_Specification_price, Discount_autosalon, CarModel, Autosalon, \
-    Autosalon_History, CarInAutosalon
+from .models import Specification, ShowroomDiscount, Car, Showroom, \
+    ShowroomHistory, ShowroomCarRelationship
 
 
 @admin.register(Specification)
 class SpecificationAdmin(admin.ModelAdmin):
-    list_display = ('name_of_car',)
-    filter_horizontal = ('autosalons_specification', 'supplier')
+    list_display = ('name_of_car', 'color', 'mileage')
+    filter_horizontal = ('showrooms_specification', 'supplier')
     list_filter = ('name_of_car',)
 
 
-@admin.register(Supplier_Specification_price)
-class SupplierSpecificationPriceAdmin(admin.ModelAdmin):
-    list_display = ('supplier', 'specification', 'supplier_specification_price', 'discount_supplier')
-    list_filter = ('supplier', 'specification')
-
-
-@admin.register(Discount_autosalon)
-class DiscountAutosalonAdmin(admin.ModelAdmin):
+@admin.register(ShowroomDiscount)
+class ShowroomDiscountAdmin(admin.ModelAdmin):
     list_display = ('start_date', 'end_date', 'discount_percentage')
-    filter_horizontal = ('autosalons_discount',)
+    filter_horizontal = ('showrooms_discount',)
     list_filter = ('start_date', 'end_date', 'discount_percentage')
 
 
-@admin.register(CarModel)
-class CarModelAdmin(admin.ModelAdmin):
-    list_display = ('in_autosalon', 'specification','autosalons')
-    list_filter = ('in_autosalon',)
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('in_showroom', 'specification', 'serial_number', 'get_showrooms')
+    list_filter = ('in_showroom',)
+
+    def get_showrooms(self, obj):
+        return ", ".join([showroom.name for showroom in obj.showrooms.all()])
+
+    get_showrooms.short_description = 'Showrooms'
 
 
-@admin.register(Autosalon)
-class AutosalonAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'balance')
-    filter_horizontal = ('discount_autosalon', 'specifications')
+class ShowroomCarRelationshipInline(admin.TabularInline):
+    model = ShowroomCarRelationship
+    extra = 1
+
+
+@admin.register(Showroom)
+class ShowroomAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'balance', 'get_cars')
+    filter_horizontal = ('discount_showroom', 'specifications', 'car')
     list_filter = ('name', 'location', 'balance')
+    inlines = [ShowroomCarRelationshipInline]
+
+    def get_cars(self, obj):
+        return ", ".join([str(car) for car in obj.car.all()])
+
+    get_cars.short_description = 'Cars'
 
 
-@admin.register(CarInAutosalon)
-class CarInAutosalonAdmin(admin.ModelAdmin):
-    list_display = ('car_model', 'autosalon', 'price', 'quantity', 'discount_autosalon')
-    list_filter = ('car_model', 'autosalon', 'quantity')
-
-
-@admin.register(Autosalon_History)
-class Autosalon_HistoryAdmin(admin.ModelAdmin):
-    list_display = ('car', 'sale_date', 'amount', 'autosalon', 'unique_customer')
+@admin.register(ShowroomHistory)
+class ShowroomHistoryAdmin(admin.ModelAdmin):
+    list_display = ('car', 'sale_date', 'amount', 'showroom', 'unique_customer')
     list_filter = ('sale_date', 'amount')

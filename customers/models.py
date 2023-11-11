@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from autosalons.models import CarModel, BaseModel
+from autosalons.models import Car, BaseModel
 
 
 # class Purchase(models.Model):
@@ -12,10 +12,6 @@ from autosalons.models import CarModel, BaseModel
 class Customer(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
-    # is_active = models.BooleanField(default=True)
-    # продажи салона это и сеть покупки покупателя
-    # purchases = models.ManyToManyField(Purchase, related_name='customers')
-
+    
     def __str__(self):
         return f"{self.user}"
