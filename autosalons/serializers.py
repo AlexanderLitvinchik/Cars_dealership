@@ -14,7 +14,7 @@ class ShowroomDiscountSerializer(serializers.ModelSerializer):
 
 
 class SpecificationSerializer(serializers.ModelSerializer):
-    supplier = SupplierSerializer(many=True)
+    supplier = SupplierSerializer(many=True, read_only=True)
 
     class Meta:
         model = Specification
@@ -65,8 +65,13 @@ class SupplierSpecificationRelationshipSerializer(serializers.ModelSerializer):
 class ShowroomSerializer(serializers.ModelSerializer):
     # car = ShowroomCarRelationshipSerializer(many=True)
     discount_showroom = ShowroomDiscountSerializer(many=True, required=False)
-    specifications = SpecificationSerializer(many=True)
+    specifications = SpecificationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Showroom
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['location'] = str(instance.location)
+        return representation

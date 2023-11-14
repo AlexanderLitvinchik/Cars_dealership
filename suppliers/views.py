@@ -1,6 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from autosalons.models import Showroom
 from .models import SupplierDiscount, Supplier
@@ -9,10 +11,10 @@ from django.shortcuts import get_object_or_404
 
 
 class SupplierViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = (JWTAuthentication,)
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-
-    # permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=["GET"])
     def history(self, request, pk: int = None) -> Response:

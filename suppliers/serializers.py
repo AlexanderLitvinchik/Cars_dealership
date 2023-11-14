@@ -11,7 +11,7 @@ class SupplierDiscountSerializer(serializers.ModelSerializer):
 
 
 class SupplierSerializer(serializers.ModelSerializer):
-    discount_suppliers = SupplierDiscountSerializer(many=True, required=False)
+    discount_suppliers = SupplierDiscountSerializer(many=True, required=False,  allow_null=True)
 
     class Meta:
         model = Supplier

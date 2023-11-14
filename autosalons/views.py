@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from customers.models import Customer
 from .models import Specification, Showroom, \
@@ -14,10 +15,11 @@ from .serializers import SpecificationSerializer, ShowroomDiscountSerializer, \
 
 
 class ShowroomViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = (JWTAuthentication,)
     queryset = Showroom.objects.all()
     serializer_class = ShowroomSerializer
-    # Переопределите права доступа по необходимости
-    # permission_classes = [IsAuthenticated,]
+
     """
     Created views for showroom
     """
@@ -45,7 +47,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
 
     # не уверен вообще, что стоит писать  запросы на удаление(есть поле is_active) и изменение ?
     @action(detail=True, methods=["DELETE"])
-    def remove_car(self, request,  pk: int = None) -> Response:
+    def remove_car(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         car = request.data.get('car')
         try:
@@ -56,7 +58,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Car not found in showroom.'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["PUT"])
-    def update_car(self, request,  pk: int = None) -> Response:
+    def update_car(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         car = request.data.get('car')
         try:
@@ -76,7 +78,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["GET"])
-    def history(self, request,  pk: int = None) -> Response:
+    def history(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         history = showroom.showroom_histories.all()
         serializer = ShowroomHistorySerializer(history, many=True)
@@ -97,14 +99,14 @@ class ShowroomViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["GET"])
-    def discounts(self, request,  pk: int = None) -> Response:
+    def discounts(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         discounts = showroom.discount_showroom.all()
         serializer = ShowroomDiscountSerializer(discounts, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["POST"])
-    def create_discount(self, request,  pk: int = None) -> Response:
+    def create_discount(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         data = request.data
         serializer = ShowroomDiscountSerializer(data=data)
@@ -116,7 +118,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
 
     # получается хочу поменять скидку для одного автосалона а получается меняю для всех
     @action(detail=True, methods=["PUT"])
-    def update_discounts(self, request,  pk: int = None) -> Response:
+    def update_discounts(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         data = request.data
         discount_id = data['id']
@@ -139,7 +141,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=["POST"])
-    def add_specification(self, request,  pk: int = None) -> Response:
+    def add_specification(self, request, pk: int = None) -> Response:
         showroom = get_object_or_404(Showroom, pk=pk)
         data = request.data
         serializer = SpecificationSerializer(data=data)
