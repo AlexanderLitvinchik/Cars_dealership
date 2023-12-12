@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -26,8 +25,8 @@ def register(request) -> Response:
                                password=request.data.get('password'))
     customer = Customer.objects.create(user=user)
 
-    # send_confirmation_email_task.delay(customer.user.id)
-    send_confirmation_email_task(customer.user.id)
+    send_confirmation_email_task.delay(customer.user.id)
+    # send_confirmation_email_task(customer.user.id)
 
     return Response({'message': 'User registered successfully. Check your email for confirmation.'})
 
@@ -86,8 +85,8 @@ def reset_password(request) -> Response:
     send_mail(
         'Password Reset Confirmation',
         f'Your password has been successfully reset.New password{new_password} for user {user}',
-        None,  # Замените на свой электронный адрес
-        [user.user.email],  # Замените на адрес пользователя
+        None,
+        [user.user.email],
         fail_silently=False,
     )
     return Response({'message': 'Password reset successful.'})

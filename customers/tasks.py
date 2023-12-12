@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
-
 from celery import shared_task
 from django.core.mail import send_mail
-from django.urls import reverse
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import Customer
 
 
 @shared_task
-def send_confirmation_email_task(user_id):
-    # breakpoint()
+def send_confirmation_email_task(user_id: int) -> None:
+    """
+    Celery task to send a confirmation email for user registration.
+    """
     user = Customer.objects.get(user_id=user_id)
     expiration_time = datetime.utcnow() + timedelta(hours=24)
     access_token = AccessToken.for_user(user.user)

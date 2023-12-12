@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'autosalons',
     'suppliers',
     'customers',
-    'countries'
+    'countries',
+    'statistics_app'
 ]
 
 MIDDLEWARE = [
