@@ -1,0 +1,51 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: car_dealership_db
+      POSTGRES_USER: dealership_username2
+      POSTGRES_PASSWORD: dealership_password
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    volumes:
+      - .:/carsdealership_app
+    image: app:carsdealership_app
+    ports:
+      - "8000:8000"
+    command: ["python",  "manage.py",  "runserver",  "0.0.0.0:8000"]
+    depends_on:
+      - db
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A carsdealership worker -l INFO
+    volumes:
+      - .:/carsdealership_app
+    depends_on:
+      - db
+      - redis
+      - app
+
+  celery-beat:
+    restart: always
+    build:
+      context: .
+    command: celery -A carsdealership beat -l INFO
+    volumes:
+      - .:/carsdealership_app
+    depends_on:
+      - db
+      - redis
+      - app

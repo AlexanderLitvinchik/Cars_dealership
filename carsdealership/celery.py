@@ -4,7 +4,7 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-# from autosalons.tasks import ShowroomsBuyingCarTask
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'carsdealership.settings')
 
@@ -13,8 +13,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 app.conf.beat_schedule = {
     'showrooms_buying_car': {

@@ -155,6 +155,14 @@ class CustomersBuyingCarTask(Task):
                 customer.balance -= matching_cars.discounted_price
                 customer.save()
 
+                # Увеличиваем баланс автосалона
+                showroom = matching_cars.showroom
+                showroom.balance += matching_cars.discounted_price
+                showroom.save()
+
+                matching_cars.quantity -= 1
+                matching_cars.save()
+
                 # Создаем запись в истории покупок
                 ShowroomHistory.objects.create(
                     showroom=matching_cars.showroom,
@@ -162,13 +170,15 @@ class CustomersBuyingCarTask(Task):
                     amount=matching_cars.discounted_price,
                     unique_customer=customer
                 )
-                return matching_cars.showroom, matching_cars, matching_cars.discounted_price
+                return showroom, matching_cars, matching_cars.discounted_price
         return None
 
 
 @app.task(base=ShowroomsBuyingCarTask)
 def run_showrooms_buying_car_task():
     # breakpoint()
+    # print('start')
+    # logger.info(f'Task started: ')
     task = ShowroomsBuyingCarTask()
     # breakpoint()
     task.run()
@@ -177,6 +187,8 @@ def run_showrooms_buying_car_task():
 @app.task(base=CustomersBuyingCarTask)
 def run_customers_buying_car_task():
     # breakpoint()
+
+    print('start')
     task = CustomersBuyingCarTask()
     # breakpoint()
     task.run()

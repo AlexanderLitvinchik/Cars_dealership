@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'celery',
     'django_celery_results',
+    'django_celery_beat',
     'autosalons',
     'suppliers',
     'customers',
@@ -88,23 +89,24 @@ WSGI_APPLICATION = 'carsdealership.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-# пока меняются модели лучше работать с sqlite3
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "car_dealership_db",
-#         "USER": "dealership_username",
-#         "PASSWORD": "dealership_password",
-#         "HOST": "localhost",
-#         "PORT": "5432",
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# пока меняются модели лучше работать с sqlite3
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "car_dealership_db",
+        "USER": "dealership_username2",
+        "PASSWORD": "dealership_password",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
@@ -154,13 +156,12 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
-#CELERY_CONFIG_MODULE = 'carsdealership.celery'
+CELERY_CONFIG_MODULE = 'carsdealership.celery'
 
-#CELERY_RESULT_BACKEND = 'django-db'
-#CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
 
 
-# Email
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
