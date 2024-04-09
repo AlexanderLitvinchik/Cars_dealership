@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'autosalons',
     'suppliers',
     'customers',
-    'countries',
     'statistics_app'
 ]
 

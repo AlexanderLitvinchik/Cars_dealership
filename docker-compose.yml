@@ -1,4 +1,8 @@
 version: '3'
+
+volumes:
+  postgres_data:
+
 services:
   db:
     image: postgres:latest
@@ -24,7 +28,7 @@ services:
   redis:
     image: redis:latest
     ports:
-      - "6379:6379"
+      - "6380:6378"
 
   celery:
     restart: always
